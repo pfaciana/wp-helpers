@@ -1,0 +1,48 @@
+{
+	"name": "pfaciana/wp-helpers",
+	"version": "1.0.0",
+	"description": "Additional classes and functions to help with writing code for WordPress",
+	"keywords": [],
+	"homepage": "https://renderdev.com/",
+	"license": "GPL-2.0-only",
+	"authors": [
+		{
+			"name": "Phil Faciana",
+			"email": "phil@renderdev.com",
+			"homepage": "https://renderdev.com/",
+			"role": "Developer"
+		}
+	],
+	"scripts": {
+		"cdao": "composer dumpautoload --optimize"
+	},
+	"extra": {
+		"wordpress": {
+			"Plugin Name": "Render WP Helpers",
+			"Remote File": "composer.json",
+			"Release Asset": "wp-helpers.zip",
+			"Requires at least": "5.5.1",
+			"License": "GPLv2 only",
+			"License URI": "https://www.gnu.org/licenses/old-licenses/gpl-2.0.html"
+		},
+		"main-file-append": [
+			"\\add_action( 'plugins_loaded', fn() => \\Render\\Autoload\\ClassLoader::getInstance(), PHP_INT_MIN );\n",
+			"\\add_action( 'rpuc/init', fn() => new \\PackageUpgrader\\V1\\Plugin );"
+		]
+	},
+	"autoload": {
+		"psr-4": {
+			"RWP\\": "src/"
+		},
+		"classmap": [],
+		"files": [
+			"src/includes/load.php",
+			"src/includes/urls.php"
+		]
+	},
+	"require": {
+		"php": ">=8.0",
+		"pfaciana/composer-smart-autoloader": "^1",
+		"pfaciana/wp-update-checker": "^1"
+	}
+}

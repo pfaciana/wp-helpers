@@ -87,7 +87,7 @@ function add_submenu_link (
 	string $url,
 	string $capability = 'manage_options',
 	?int   $position = NULL,
-	bool   $raw_slug = NULL
+	?bool   $raw_slug = NULL
 ): bool {
 	global $submenu, $menu, $_wp_real_parent_file, $_wp_submenu_nopriv, $_parent_pages;
 

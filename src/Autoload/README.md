@@ -2,13 +2,13 @@
 
 ## Directory
 
-This finds and loads PHP files in your code automatically. It can either `require` files or initialize singletons that have a `get_instance()` method.
+This finds and loads PHP files in your code automatically. It can either `require` files or initialize singletons that have a `get_instance()` method. It supports both directory paths and glob patterns for flexible file matching.
 
 ### Usage
 
 It accepts a `$config` array. That `$config` array is an associative array with the base directory to search as the key, with the value as another associative array of namespaces as the keys and the an array of relative directories as the values.
 
-If the namespace key is either empty or an integer, then the array of values are directories where the files will be `require`d , otherwise, the files with classes in them will be initialized as singletons with the `get_instance()` method. If a file does not have a `public` `get_instance()` method, it will be skipped.
+If the namespace key is either empty or an integer, then the array of values are directories or glob patterns where the files will be `require`d , otherwise, the files with classes in them will be initialized as singletons with the `get_instance()` method. If a file does not have a `public` `get_instance()` method, it will be skipped.
 
 #### Example
 
@@ -39,6 +39,51 @@ For the other keys that are namespaces (non-NULL/non-integers), it runs somethin
 \NameSpaceA\Dir1\SomeFile::get_instance()
 // any other classes ...
 \NameSpaceZ\DirZ\SomeFile::get_instance()
+```
+
+### Custom Glob Pattern Support
+
+The Directory class includes custom glob pattern support for flexible file matching. This extends standard PHP glob functionality with special handling for consecutive asterisks:
+
+- **Standard wildcards**: Use `*` and `?` (handled by PHP's built-in `glob()` function)
+- **Custom consecutive asterisks**: Use `**`, `***`, etc. for multi-depth directory matching
+  - `glob()` only supports one directory (no `**` syntax). So we've added custom support for multiple levels of directories.
+  - `**` internally expands to multiple patterns: `*` and `*/*`
+  - `***` expands to: `*`, `*/*`, and `*/*/*`
+  - Each additional asterisk adds another depth level
+  - This allows you to search multiple levels of nested dir while working with the `glob()` function
+
+#### How Consecutive Asterisks Work
+
+When you use consecutive asterisks, the code automatically expands them into multiple glob patterns:
+
+```php
+// Input special glob pattern
+'api/**/handlers'
+// Gets expanded internally to these glob patterns:
+[
+    'api/*/handlers',      // 1 level deep
+    'api/*/*/handlers'     // 2 levels deep
+]
+
+// Input special glob pattern  
+'modules/***/init'
+// Gets expanded internally to these glob patterns:
+[
+    'modules/*/init',        // 1 level deep
+    'modules/*/*/init',      // 2 levels deep  
+    'modules/*/*/*/init'     // 3 levels deep
+]
+
+// Input special glob pattern
+'/a/**/b/**/c'
+// Gets expanded internally to these glob patterns:
+[   
+    '/a/*/b/*/c'                 // Both sets of ** are 1 level deep
+    '/a/*/*/b/*/c'               // First set of ** is 1 level deep, second is 2 levels deep 
+    '/a/*/b/*/*/c'               // First set of ** is 2 levels deep, second is 1 level deep
+    '/a/*/*/b/*/*/c'             // Both sets of ** are 2 levels deep
+]
 ```
 
 ### Why not just use composer's autoloader?

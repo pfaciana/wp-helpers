@@ -1,6 +1,6 @@
 {
 	"name": "pfaciana/wp-helpers",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "Additional classes and functions to help with writing code for WordPress",
 	"keywords": [],
 	"homepage": "https://renderdev.com/",
@@ -14,7 +14,8 @@
 		}
 	],
 	"scripts": {
-		"cdao": "composer dumpautoload --optimize"
+		"cdao": "composer dumpautoload --optimize",
+		"test": "vendor/bin/pest"
 	},
 	"extra": {
 		"wordpress": {
@@ -40,9 +41,17 @@
 			"src/includes/urls.php"
 		]
 	},
+	"config": {
+		"allow-plugins": {
+			"pestphp/pest-plugin": true
+		}
+	},
 	"require": {
 		"php": ">=8.0",
 		"pfaciana/composer-smart-autoloader": "^1",
 		"pfaciana/wp-update-checker": "^1"
+	},
+	"require-dev": {
+		"pestphp/pest": "^3.8"
 	}
 }
